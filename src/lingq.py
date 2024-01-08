@@ -118,8 +118,27 @@ def create_collection(title, description, language_code="es", **kwargs):
         headers=headers,
         json=payload,
     )
-    print(response)
-    print(response.json())
+    return response.json()
+
+
+def import_lesson(title, collection_id, language_code="es", level=5, **kwargs):
+    payload = {
+        "collection": int(collection_id),
+        # "description": description,
+        # "text": text,
+        "language": language_code,
+        "save": True,
+        "status": "private",
+        "title": title,
+        "level": int(level),
+        **kwargs,
+    }
+
+    response = requests.post(
+        f"https://www.lingq.com/api/v3/{language_code}/lessons/import/",
+        headers=headers,
+        json=payload,
+    )
     return response.json()
 
 

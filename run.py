@@ -1,9 +1,16 @@
 import time
 import pandas as pd
+import argparse
 
 from pytubefix import YouTube, Channel
 from src.lingq import *
 from src.youtube import get_youtube_data
+
+parser = argparse.ArgumentParser("LingQ-Importer")
+parser.add_argument("-n", default=50)
+parser.add_argument("--manual-only", default=True)
+
+args = parser.parse_args()
 
 
 def run(
@@ -50,13 +57,14 @@ def run(
 
     for record in records:
         if not record["title"] in existing_titles:
-            response_json = post_lesson(
+            response_json = import_lesson(
                 title=record["title"],
                 description=record["description"],
-                text=record["text"].replace("\xa0", ""),
-                originalUrl=record["url"],
                 collection_id=collection_id,
-                level=4,
+                url=record["url"],
+                language_code="es",
+                level=5,
+                extra={"ytpage": requests.get(record["url"]).text, "ytdebug": False},
             )
 
             print(f"Uploaded Video `{response_json['title']}`")
@@ -77,9 +85,7 @@ if __name__ == "__main__":
     for youtube_channel in youtube_channels:
         run(
             youtube_channel,
-            n_videos=50,
+            n_videos=args.n,
             language_code="es",
-            manual_transcripts_only=True,
+            manual_transcripts_only=False,
         )
-
-run("CoreanoVlogs", language_code="es", n_videos=50, manual_transcripts_only=False)

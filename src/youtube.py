@@ -60,12 +60,21 @@ def get_youtube_data(
     ignore_titles=[],
     n_videos=100,
     manual_transcripts_only=True,
+    video_ids=None,
 ):
     # channel = Channel(f"https://www.youtube.com/c/{channel_name}/videos")
     channel = Channel(f"https://www.youtube.com/@{channel_name}")
     results = []
-    for video in tqdm(channel.videos[:n_videos]):
-        yt = YouTube(video.watch_url)
+    yts = []
+    if video_ids:
+        for video_id in tqdm(video_ids):
+            yt = YouTube(f"https://www.youtube.com/watch?v={video_id}")
+            yts.append(yt)
+    else:
+        for video in channel.videos[:n_videos]:
+            yt = YouTube(video.watch_url)
+            yts.append(yt)
+    for yt in tqdm(yts):
         if yt.title in ignore_titles:
             continue
         if not "captions" in yt.vid_info:
@@ -78,18 +87,18 @@ def get_youtube_data(
             if language_code in caption.code and (
                 caption.code != f"a.{language_code}" or not manual_transcripts_only
             ):
-                transcript_df = get_video_transcript(
-                    video.watch_url.replace("https://youtube.com/watch?v=", ""),
-                    manually_created=manual_transcripts_only,
-                    language_code=language_code,
-                )
+                # transcript_df = get_video_transcript(
+                #     yt.video_id,
+                #     manually_created=manual_transcripts_only,
+                #     language_code=language_code,
+                # )
                 results.append(
                     {
                         "title": yt.title,
-                        "url": video.watch_url,
+                        "url": f"https://www.youtube.com/watch?v={yt.video_id}",
                         "thumbnail": yt.thumbnail_url,
-                        "text": " ".join(transcript_df["text"]),
-                        "text_df": transcript_df,
+                        # "text": " ".join(transcript_df["text"]),
+                        # "text_df": transcript_df,
                         "description": yt.description.replace("\n", ""),
                     }
                 )
