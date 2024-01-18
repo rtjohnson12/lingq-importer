@@ -7,8 +7,8 @@ from src.lingq import *
 from src.youtube import get_youtube_data
 
 parser = argparse.ArgumentParser("LingQ-Importer")
-parser.add_argument("-n", default=50)
-parser.add_argument("--manual-only", default=True)
+parser.add_argument("-n", type=int, default=50)
+parser.add_argument("channel_names", nargs="+", help="YouTube channel names")
 
 args = parser.parse_args()
 
@@ -72,17 +72,17 @@ def run(
 
 
 if __name__ == "__main__":
-    youtube_channels = [
-        "JorgeDeLeonMx",
-        "CasoCerrado",
-        "EasySpanish",
-        "31minutos",
-        "noticias",
-        "DreamingSpanish",
-        "CoreanoVlogs",
-    ]
+    # youtube_channels = [
+    #     "JorgeDeLeonMx",
+    #     "CasoCerrado",
+    #     "EasySpanish",
+    #     "31minutos",
+    #     "noticias",
+    #     "DreamingSpanish",
+    #     "CoreanoVlogs",
+    # ]
 
-    for youtube_channel in youtube_channels:
+    for youtube_channel in args.channel_names:
         run(
             youtube_channel,
             n_videos=args.n,
