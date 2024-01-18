@@ -54,7 +54,7 @@ To import `n` videos from YouTube channels as a lesson into LingQ, run the follo
 python run.py -n 50 channel1 channel2 channel3
 ```
 
-Replace <YOUTUBE_VIDEO_URL> with the URL of the YouTube video you want to import.
+The channel names come the channel url. For https://www.youtube.com/@CasoCerrado, you would use `CasoCerrado`.
 
 ## Contributing
 
